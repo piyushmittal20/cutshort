@@ -23,6 +23,30 @@ const Form = () => {
     }
   };
 
+  const page1 = {
+    fullname: Yup.string()
+      .max(15, "Must be 15 characters or less")
+      .required("Required"),
+    displayname: Yup.string()
+      .max(15, "Must be 15 characters or less")
+      .required("Required"),
+  };
+
+  const page2 = {
+    workspacename: Yup.string()
+      .max(15, "Must be 15 characters or less")
+      .required("Required"),
+    workspaceurl: Yup.string()
+      .max(15, "Must be 15 characters or less")
+      .required("Required"),
+  };
+
+  const page3 = {
+    usage: Yup.string()
+      .max(15, "Must be 15 characters or less")
+      .required("Required"),
+  };
+
   const formik = useFormik({
     initialValues: {
       fullname: "",
@@ -31,24 +55,13 @@ const Form = () => {
       workspaceurl: "",
       usage: "",
     },
-    // validationSchema: Yup.object({
-    //   fullname: Yup.string()
-    //     .max(15, "Must be 15 characters or less")
-    //     .required("Required"),
-    //   displayname: Yup.string()
-    //     .max(15, "Must be 15 characters or less")
-    //     .required("Required"),
-    //   workspacename: Yup.string()
-    //     .max(15, "Must be 15 characters or less")
-    //     .required("Required"),
-    //   workspaceurl: Yup.string()
-    //     .max(15, "Must be 15 characters or less")
-    //     .required("Required"),
-    //   usage: Yup.string()
-    //     .max(15, "Must be 15 characters or less")
-    //     .required("Required"),
-    // }),
+    validationSchema: Yup.object(
+      page === 0 ? page1 : page === 1 ? page2 : page === 2 ? page3 : {}
+    ),
     onSubmit: (values) => {
+      if (values.fullname !== "" && values.displayname !== "") {
+        setPage((currPage) => currPage + 1);
+      }
       console.log(values);
     },
   });
@@ -57,14 +70,17 @@ const Form = () => {
     <form className="page" onSubmit={formik.handleSubmit}>
       <div className="progress-bar">
         <div className={page >= 0 ? "element completed" : "element"}>1</div>
+        <div></div>
         <div className={page >= 1 ? "element completed" : "element"}>2</div>
+        <div></div>
         <div className={page >= 2 ? "element completed" : "element"}>3</div>
+        <div></div>
         <div className={page >= 3 ? "element completed" : "element"}>4</div>
       </div>
       <div className="page-body">{PageDisplay()}</div>
       <div className="btn-container">
         {page !== length - 1 ? (
-          <button
+          <div
             className={page === 0 ? "btn disabled" : "btn"}
             disabled={page === 0}
             onClick={() => {
@@ -72,19 +88,9 @@ const Form = () => {
             }}
           >
             Previous
-          </button>
+          </div>
         ) : null}
-        <button
-          onClick={() => {
-            if (page == length - 1) {
-              console.log(formik.values);
-            } else {
-              setPage((currPage) => currPage + 1);
-            }
-          }}
-          className={formik.isValid ? "btn" : "btn disabled"}
-          type="submit"
-        >
+        <button className="btn" type="submit">
           {page === length - 2
             ? "Submit"
             : page === length - 1
